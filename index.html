@@ -398,12 +398,12 @@
                     <section class="py-5 border border-subtle p-3 mb-5" id="contact">
                         <h1 class="title pb-3">Contact Me</h1>
                         <div style="width:75%" class="mx-auto">
-						<!-- <p class="mb-4 header-small-text">Kindly fiil in the empty fields to get in touch. -->
-                        <form>
+                        <form id="contact-form">
                             <div class="row g-3">
+                               <div id="form-status" style="display:none" class="py-3 alert alert-info text-center rounded"></div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control border border-subtle" id="fullname" placeholder="Enter Fullname" name="fullname" required>
+                                        <input type="text" class="form-control border border-subtle" id="name" placeholder="Enter Fullname" name="name" required>
                                         <label for="name">Name :</label>
                                     </div>
                                 </div>
@@ -415,19 +415,20 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control border border-subtle" id="subject" required placeholder="Subject" name="subject">
-                                        <label for="subject">Subject :</label>
+                                        <input type="text" class="form-control border border-subtle" id="title" placeholder="title" name="title" required>
+                                        <label for="subject">Title :</label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-floating">
-                                        <textarea class="form-control" placeholder="Leave a message here" id="message" style="height: 200px" required name="message"></textarea>
+                                        <textarea class="form-control" placeholder="Leave a message here" id="message" style="height: 200px" name="message" required></textarea>
                                         <label for="message">Message :</label>
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <button class="btn contact-btn col-10 offset-1 fs-5 text-primary" type="submit">Send Message</button>
                                 </div>
+                                <input type="hidden" name="time" value="Nov 26 2025 23:27"/>
                             </div>
                         </form>
                     </div>
@@ -462,14 +463,62 @@
         
     </div>
     <script src="Assets/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="Assets/jquery/jquery.js"></script>
+
+    <script type="text/javascript">
+  (function() {
+    emailjs.init({
+      publicKey: "dCRzVAR5IYuVfkGMr",
+    });
+  })();
+</script>
+
+         <script type="text/javascript">
+        window.onload = function() {
+            document.getElementById('contact-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+        const statusBox = document.getElementById('form-status');
+        statusBox.style.display = 'block';
+        statusBox.innerHTML = 'Sending...'; 
+                // these IDs from the previous steps
+                emailjs.sendForm('service_idczq1h','template_mix9yrk', this)
+                    .then(() => {
+                        console.log('SUCCESS!');
+                        statusBox.cLassName = "success";
+                        statusBox.innerHTML = 'Message sent successfully! 🎉';
+                        statusBox.style.color = '#065f46';           
+                        // statusBox.style.display = 'block';
+                        document.getElementById('contact-form').reset();
+                        setTimeout(() => {
+                            statusBox.style.display = 'none';
+                        }, 5000);
+                    }, (error) => {
+                        console.log('FAILED...', error);
+                        statusBox.cLassName = "error";
+                        statusBox.innerHTML = 'Failed to send message. Please try again 😢.';
+                        statusBox.style.color = '#b91c1c';
+                        setTimeout(() => {
+                            statusBox.style.display = 'none';
+                        }, 5000);
+                    });
+            });
+            
+
+        }
+        
+    </script>
+
+
+
     <!-- <script>
         $(document).ready(function(){
            function message(){
              $('.contact-btn').click(function(){
-                var fullname = $('#fullname').val()
+                var fullname = $('#name').val()
                 var email = $('#email').val();
-                var title = $('#subject').val()
+                var title = $('#title').val()
                 var message = $('#message').val()
                     if(fullname === '' || email === '' || title === '' || message === ''){
                         alert('please complete the fields');
